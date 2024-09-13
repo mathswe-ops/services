@@ -12,6 +12,8 @@ export type SumTypeMap<T extends SumType, R> = {
     [K in T["type"]]: R;
 };
 
-export function match<V extends SumType, R>(value: V, map: SumTypeMap<V, R>): R {
-    return map[value.type as keyof SumTypeMap<V, R>];
+export type MatchValue<V extends SumType, R> = SumTypeMap<V, R>[keyof SumTypeMap<V, R>];
+
+export function match<V extends SumType, R>(map: SumTypeMap<V, R>): (value: V) => MatchValue<V, R> {
+    return (value: V) => map[value.type as keyof SumTypeMap<V, R>];
 }
