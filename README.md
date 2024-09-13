@@ -20,6 +20,15 @@
 MathSwe Ops with all the general purpose web Services to develop and deploy
 mathematical software.
 
+## Getting Started
+
+Run development mode with `npm run start` or `npm run dev`.
+
+Run tests with `npm run test`.
+
+To deploy, login to the Wrangler CLI via `wrangler login`, and run `npm run 
+deploy`.
+
 ## Contact
 
 Tobias Briones: [GitHub](https://github.com/tobiasbriones)
