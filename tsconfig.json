@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "lib": ["esnext"],
+        "noEmit": true,
+        "strict": true,
+        "types": ["@cloudflare/workers-types"],
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "target": "es2022",
+        "allowJs": true,
+        "moduleDetection": "force",
+        "isolatedModules": true
+    },
+    "exclude": ["node_modules", "dist", "test"]
+}
