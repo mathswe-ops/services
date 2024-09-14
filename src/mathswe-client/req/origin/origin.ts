@@ -4,7 +4,7 @@
 
 import { OriginDomain, originDomainFromUrl } from "./origin-domain";
 import { pipe } from "fp-ts/function";
-import { newUrlFromString, SecureUrl } from "../req/http";
+import { newUrlFromString, SecureUrl } from "../http";
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
 
