@@ -18,6 +18,6 @@ export function match<V extends SumType, R>(map: SumTypeMap<V, R>): (value: V) =
     return (value: V) => map[value.tag as keyof SumTypeMap<V, R>];
 }
 
-export function matchVariant<R>(value: SumType): <V>(fn: (variant: V) => R) => R {
+export function withMatchVariant<R>(value: SumType): <V>(fn: (variant: V) => R) => R {
     return <V>(fn: (variant: V) => R) => fn(value as V);
 }

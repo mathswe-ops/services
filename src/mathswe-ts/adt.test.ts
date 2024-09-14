@@ -3,7 +3,7 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { describe, expect, it } from "vitest";
-import { match, matchVariant } from "./adt";
+import { match, withMatchVariant } from "./adt";
 import { pipe } from "fp-ts/function";
 
 describe("SumTypeMap", () => {
@@ -40,14 +40,14 @@ describe("SumTypeMap", () => {
             = ({ radius }: Circle) => Math.PI * Math.pow(radius, 2);
 
         const area = (shape: Shape): number => {
-            const shapeVariant = matchVariant<number>(shape);
+            const withShapeVariant = withMatchVariant<number>(shape);
 
             return pipe(
                 shape,
                 match(
                     {
                         "Point": 0,
-                        "Circle": shapeVariant(circleArea),
+                        "Circle": withShapeVariant(circleArea),
                     }),
             );
         };
