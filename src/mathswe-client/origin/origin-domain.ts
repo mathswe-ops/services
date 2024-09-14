@@ -2,11 +2,23 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { MathSwe, mathsweToDomainName } from "../domain/mathswe";
+import {
+    MathSwe,
+    mathsweFromString,
+    mathsweToDomainName,
+} from "../domain/mathswe";
 import { match, withMatchVariant } from "../../mathswe-ts/adt";
 import { pipe } from "fp-ts/function";
-import { ThirdParty, thirdPartyToDomainName } from "../domain/third-party";
+import {
+    ThirdParty,
+    thirdPartyFromString,
+    thirdPartyToDomainName,
+} from "../domain/third-party";
 import { ToDomainName } from "../domain/domain";
+import { FromString } from "../../mathswe-ts/string";
+import * as E from "fp-ts/Either";
+import { Either } from "fp-ts/Either";
+import { identity } from "fp-ts";
 
 export type OriginDomain
     = { tag: "MathSweDomain", mathswe: MathSwe }
@@ -41,6 +53,28 @@ export const toDomainName: ToDomainName<OriginDomain> = {
                 "MathSweDomain": withDomainVariant(mathsweDomainName),
                 "ThirdPartyDomain": withDomainVariant(thirdPartyDomainName),
             }),
+        );
+    },
+};
+
+export const originDomainFromString: FromString<OriginDomain> = {
+    fromString(string: string): Either<string, OriginDomain> {
+        const mathsweResult = pipe(
+            string,
+            mathsweFromString.fromString,
+            E.map(mathSweDomain),
+        );
+
+        const thirdPartyResult = pipe(
+            string,
+            thirdPartyFromString.fromString,
+            E.map(thirdPartyDomain),
+        );
+
+        return pipe(
+            mathsweResult,
+            E.fold(_ => thirdPartyResult, mathswe => E.right(mathswe)),
+            E.mapLeft(_ => "Unaccepted origin domain.")
         );
     },
 };
