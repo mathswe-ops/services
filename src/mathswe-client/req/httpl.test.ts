@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { newHostnameFromString } from "./http";
+import { newHostnameFromString, newPathFromString } from "./http";
 import { left, right } from "fp-ts/Either";
 import { describe, expect, test } from "vitest";
 
@@ -86,5 +86,72 @@ describe("newHostnameFromString", () => {
         });
 
         expect(newHostnameFromString(input)).toEqual(expected);
+    });
+});
+
+describe("newPathFromString", () => {
+    test("should return valid Path for a well-formed path string", () => {
+        const input = "home/user/documents";
+        const expected = right(["home", "user", "documents"]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle leading slashes in the path", () => {
+        const input = "/root/bin/scripts";
+        const expected = right([
+            "root",
+            "bin",
+            "scripts",
+        ]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle trailing slashes in the path", () => {
+        const input = "var/log/nginx/";
+        const expected = right(["var", "log", "nginx"]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle consecutive slashes in the path", () => {
+        const input = "usr//local/bin//";
+        const expected = right(["usr", "local", "bin"]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle an empty path", () => {
+        const input = "";
+        const expected = right([]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle a single slash path", () => {
+        const input = "/";
+        const expected = right([]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle a single directory", () => {
+        const input = "usr";
+        const expected = right(["usr"]);
+
+        expect(newPathFromString(input)).toEqual(expected);
+    });
+
+    test("should handle a complex path with mixed slashes", () => {
+        const input = "/var//www/html//index/";
+        const expected = right([
+            "var",
+            "www",
+            "html",
+            "index",
+        ]);
+
+        expect(newPathFromString(input)).toEqual(expected);
     });
 });
