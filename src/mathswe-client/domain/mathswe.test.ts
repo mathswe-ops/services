@@ -3,8 +3,15 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { describe, expect, it } from "vitest";
-import { mathsweToDomainName, mathsweFromString } from "./mathswe";
+import {
+    MathSwe,
+    mathsweFromString,
+    mathswePathAccess,
+    mathsweToDomainName,
+} from "./mathswe";
 import { isLeft, isRight, left, right } from "fp-ts/Either";
+import { Access, fullAccess } from "./domain";
+import { some } from "fp-ts/Option";
 
 describe("mathsweToDomainName", () => {
     it("should return the correct domain name for MathSweCom", () => {
@@ -66,4 +73,22 @@ describe("FromString", () => {
             expect(result).toEqual(left("Invalid MathSwe string."));
         },
     );
+});
+
+describe("PathAccess for MathSwe", () => {
+    it("should return fullAccess for any MathSwe domain", () => {
+        const domains: MathSwe[] = [
+            "MathSweCom",
+            "MathSoftware",
+            "MathSoftwareEngineer",
+        ];
+
+        domains.forEach(domain => {
+            const result = mathswePathAccess.pathAccess(domain);
+
+            const expectedAccess: Access = some(fullAccess);
+
+            expect(result).toEqual(expectedAccess);
+        });
+    });
 });

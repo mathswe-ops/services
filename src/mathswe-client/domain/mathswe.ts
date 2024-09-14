@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { ToDomainName } from "./domain";
+import { Access, fullAccess, PathAccess, ToDomainName } from "./domain";
 import { FromString } from "../../mathswe-ts/string";
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
+import { some } from "fp-ts/Option";
 
 export type MathSwe
     = "MathSweCom"
@@ -32,5 +33,11 @@ export const mathsweFromString: FromString<MathSwe> = {
         const parse = E.fromNullable("Invalid MathSwe string.");
 
         return parse(stringToMathSwe[string]);
+    },
+};
+
+export const mathswePathAccess: PathAccess<MathSwe> = {
+    pathAccess(_: MathSwe): Access {
+        return some(fullAccess);
     },
 };

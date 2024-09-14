@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { ToDomainName } from "./domain";
+import { Access, partialAccess, PathAccess, ToDomainName } from "./domain";
 import { FromString } from "../../mathswe-ts/string";
-import { Either } from "fp-ts/Either";
 import * as E from "fp-ts/Either";
+import { Either } from "fp-ts/Either";
+import { some } from "fp-ts/Option";
 
 export type ThirdParty = "GitHubCom";
 
@@ -25,5 +26,22 @@ export const thirdPartyFromString: FromString<ThirdParty> = {
         const parse = E.fromNullable("Invalid ThirdParty string.");
 
         return parse(stringToThirdParty[string]);
+    },
+};
+
+export const thirdPartyPathAccess: PathAccess<ThirdParty> = {
+    pathAccess(domain: ThirdParty): Access {
+        const access: Record<ThirdParty, Access> = {
+            GitHubCom: some(partialAccess([
+                "tobiasbriones",
+                "mathswe",
+                "mathswe-ops",
+                "mathsoftware",
+                "repsymo",
+                "texsydo",
+            ])),
+        };
+
+        return access[domain];
     },
 };
