@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { newHostnameFromString, newPathFromString } from "./http";
+import {
+    newHostnameFromString,
+    newPathFromString,
+    newUrlFromString,
+} from "./http";
 import { left, right } from "fp-ts/Either";
 import { describe, expect, test } from "vitest";
 
@@ -153,5 +157,88 @@ describe("newPathFromString", () => {
         ]);
 
         expect(newPathFromString(input)).toEqual(expected);
+    });
+});
+
+describe("newUrlFromString", () => {
+    test("should return valid SecureUrl for a well-formed HTTPS URL", () => {
+        const input = "https://sub.example.com/home/user/documents";
+        const expected = right({
+            hostname: { domainName: "example.com", subdomain: "sub" },
+            path: ["home", "user", "documents"],
+        });
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should handle URLs with trailing slashes in the path", () => {
+        const input = "https://example.com/";
+        const expected = right({
+            hostname: { domainName: "example.com", subdomain: "" },
+            path: [],
+        });
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should handle URLs with only hostname and no path", () => {
+        const input = "https://example.com";
+        const expected = right({
+            hostname: { domainName: "example.com", subdomain: "" },
+            path: [],
+        });
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should handle URLs with subdomain and path", () => {
+        const input = "https://subdomain.example.com/path/to/resource";
+        const expected = right({
+            hostname: { domainName: "example.com", subdomain: "subdomain" },
+            path: ["path", "to", "resource"],
+        });
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should return Left for a URL with an invalid protocol", () => {
+        const input = "http://example.com/path/to/resource";
+        const expected = left("URL does not have the HTTPS protocol.");
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should return Left for a URL without a hostname", () => {
+        const input = "https:///path/to/resource";
+        const expected = left("Invalid hostname format.");
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test("should return Left for an empty URL", () => {
+        const input = "";
+        const expected = left("URL does not have the HTTPS protocol.");
+
+        expect(newUrlFromString(input)).toEqual(expected);
+    });
+
+    test(
+        "should handle URLs with only path and no hostname (invalid case)",
+        () => {
+            const input = "https:///path/to/resource";
+            const expected = left("Invalid hostname format.");
+
+            expect(newUrlFromString(input)).toEqual(expected);
+        },
+    );
+
+    test("should handle URLs with complex paths", () => {
+        const input = "https://example.com/complex/path/with/various/segments";
+        const expected = right({
+            hostname: { domainName: "example.com", subdomain: "" },
+            path: ["complex", "path", "with", "various", "segments"],
+        });
+
+        expect(newUrlFromString(input)).toEqual(expected);
     });
 });

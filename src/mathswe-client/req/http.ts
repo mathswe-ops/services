@@ -38,3 +38,48 @@ export const newPathFromString = (path: string): Either<string, Path> => pipe(
     path.split('/').filter(Boolean),
     right
 );
+
+export type SecureUrl = {
+    hostname: Hostname,
+    path: Path,
+}
+
+export const newUrlFromString = (url: string): Either<string, SecureUrl> => {
+    type UrlWithoutProtocol = string;
+
+    const stripProtocol = (url: string): Either<string, UrlWithoutProtocol> =>
+        url.startsWith("https://")
+        ? right(url.slice(8))
+        : left("URL does not have the HTTPS protocol.");
+
+    const splitHostWithPath = (url: UrlWithoutProtocol): Either<string, [string, string]> =>
+        pipe(
+            url.split("/"),
+            parts => right(
+                parts.length > 1
+                ? [parts[0], parts.slice(1).join("/")]
+                : [parts[0], ""],
+            ),
+        );
+
+    const mapRawHost = ([rawHost, rawPath]: [string, string]): Either<string, [Hostname, string]> => pipe(
+        rawHost,
+        newHostnameFromString,
+        E.map(host => [host, rawPath]),
+    );
+
+    const mapRawPath = ([host, rawPath]: [Hostname, string]): Either<string, [Hostname, Path]> => pipe(
+        rawPath,
+        newPathFromString,
+        E.map(path => [host, path]),
+    );
+
+    return pipe(
+        url,
+        stripProtocol,
+        E.flatMap(splitHostWithPath),
+        E.flatMap(mapRawHost),
+        E.flatMap(mapRawPath),
+        E.map(([hostname, path]) => ({ hostname, path }))
+    );
+};
