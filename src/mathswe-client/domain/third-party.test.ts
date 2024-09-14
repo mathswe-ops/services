@@ -3,8 +3,14 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { describe, expect, it } from "vitest";
-import { thirdPartyFromString, thirdPartyToDomainName } from "./third-party";
+import {
+    thirdPartyFromString,
+    thirdPartyPathAccess,
+    thirdPartyToDomainName,
+} from "./third-party";
 import { isLeft, isRight, left, right } from "fp-ts/Either";
+import { Access, partialAccess } from "./domain";
+import { some } from "fp-ts/Option";
 
 describe("thirdPartyToDomainName", () => {
     it("should return the correct domain name for GitHubCom", () => {
@@ -54,4 +60,21 @@ describe("FromString", () => {
             expect(result).toEqual(left("Invalid ThirdParty string."));
         },
     );
+});
+
+describe("PathAccess for ThirdParty", () => {
+    it("should return partial access for GitHubCom", () => {
+        const result = thirdPartyPathAccess.pathAccess("GitHubCom");
+
+        const expectedAccess: Access = some(partialAccess([
+            "tobiasbriones",
+            "mathswe",
+            "mathswe-ops",
+            "mathsoftware",
+            "repsymo",
+            "texsydo",
+        ]));
+
+        expect(result).toEqual(expectedAccess);
+    });
 });
