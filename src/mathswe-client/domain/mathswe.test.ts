@@ -7,17 +7,20 @@ import { mathsweToDomainName } from "./mathswe";
 
 describe("mathsweToDomainName", () => {
     it("should return the correct domain name for MathSweCom", () => {
-        const result = mathsweToDomainName("MathSweCom");
+        const result = mathsweToDomainName.toDomainName("MathSweCom");
+
         expect(result).toBe("mathswe.com");
     });
 
     it("should return the correct domain name for MathSoftware", () => {
-        const result = mathsweToDomainName("MathSoftware");
+        const result = mathsweToDomainName.toDomainName("MathSoftware");
+
         expect(result).toBe("mathsoftware.com");
     });
 
     it("should return the correct domain name for MathSoftwareEngineer", () => {
-        const result = mathsweToDomainName("MathSoftwareEngineer");
+        const result = mathsweToDomainName.toDomainName("MathSoftwareEngineer");
+
         expect(result).toBe("mathsoftwareengineer.com");
     });
 });
