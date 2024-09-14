@@ -31,3 +31,10 @@ export const newHostnameFromString = (hostname: string): Either<string, Hostname
         }),
     )
 );
+
+export type Path = string[];
+
+export const newPathFromString = (path: string): Either<string, Path> => pipe(
+    path.split('/').filter(Boolean),
+    right
+);
