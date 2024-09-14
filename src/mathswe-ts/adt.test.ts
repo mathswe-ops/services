@@ -7,10 +7,10 @@ import { match, matchVariant } from "./adt";
 import { pipe } from "fp-ts/function";
 
 describe("SumTypeMap", () => {
-    type Shape = { type: "Point" } | { type: "Circle", radius: number };
+    type Shape = { tag: "Point" } | { tag: "Circle", radius: number };
 
-    const point: Shape = { type: "Point" };
-    const circle: Shape = { type: "Circle", radius: 1 };
+    const point: Shape = { tag: "Point" };
+    const circle: Shape = { tag: "Circle", radius: 1 };
 
     it("should match sum type variants with type safe exhaustive map", () => {
         const label = (shape: Shape) => match(
