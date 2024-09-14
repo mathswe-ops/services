@@ -7,7 +7,7 @@ import {
     mathSweDomain,
     OriginDomain, thirdPartyDomain,
     toDomainName,
-} from "./origin";
+} from "./origin-domain";
 
 describe("toDomainName", () => {
     it("should return the correct domain name for MathSweCom", () => {
