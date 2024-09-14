@@ -5,22 +5,10 @@
 import { describe, expect, it } from "vitest";
 import { newUrlFromString, SecureUrl } from "../http";
 import { newOriginFromString, newOriginFromUrl } from "./origin";
-import { identity, pipe } from "fp-ts/function";
-import * as E from "fp-ts/Either";
-import { Either, isLeft, isRight, left } from "fp-ts/Either";
+import { pipe } from "fp-ts/function";
+import { isLeft, isRight, left } from "fp-ts/Either";
 import { mathSweDomain } from "./origin-domain";
-
-function requireRight<L, R>(result: Either<L, R>) {
-    return pipe(
-        result,
-        E.fold(
-            error => {
-                throw new Error(JSON.stringify(error));
-            },
-            identity,
-        ),
-    );
-}
+import { requireRight } from "../../../mathswe-ts/require";
 
 describe("newOriginFromUrl", () => {
     it(
