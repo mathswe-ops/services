@@ -15,12 +15,12 @@ describe("mathsweToDomainName", () => {
     it("should return the correct domain name for MathSoftware", () => {
         const result = mathsweToDomainName.toDomainName("MathSoftware");
 
-        expect(result).toBe("mathsoftware.com");
+        expect(result).toBe("math.software");
     });
 
     it("should return the correct domain name for MathSoftwareEngineer", () => {
         const result = mathsweToDomainName.toDomainName("MathSoftwareEngineer");
 
-        expect(result).toBe("mathsoftwareengineer.com");
+        expect(result).toBe("mathsoftware.engineer");
     });
 });

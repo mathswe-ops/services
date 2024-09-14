@@ -13,8 +13,8 @@ export const mathsweToDomainName: ToDomainName<MathSwe> = {
     toDomainName(domain: MathSwe): string {
         return {
             "MathSweCom": "mathswe.com",
-            "MathSoftware": "mathsoftware.com",
-            "MathSoftwareEngineer": "mathsoftwareengineer.com",
+            "MathSoftware": "math.software",
+            "MathSoftwareEngineer": "mathsoftware.engineer",
         }[domain];
     },
 };
