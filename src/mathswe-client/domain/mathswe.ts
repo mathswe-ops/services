@@ -3,6 +3,9 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { ToDomainName } from "./domain";
+import { FromString } from "../../mathswe-ts/string";
+import * as E from "fp-ts/Either";
+import { Either } from "fp-ts/Either";
 
 export type MathSwe
     = "MathSweCom"
@@ -16,5 +19,18 @@ export const mathsweToDomainName: ToDomainName<MathSwe> = {
             "MathSoftware": "math.software",
             "MathSoftwareEngineer": "mathsoftware.engineer",
         }[domain];
+    },
+};
+
+export const mathsweFromString: FromString<MathSwe> = {
+    fromString(string: string): Either<string, MathSwe> {
+        const stringToMathSwe: Record<string, MathSwe> = {
+            "mathswe.com": "MathSweCom",
+            "math.software": "MathSoftware",
+            "mathsoftware.engineer": "MathSoftwareEngineer",
+        };
+        const parse = E.fromNullable("Invalid MathSwe string.");
+
+        return parse(stringToMathSwe[string]);
     },
 };
