@@ -3,7 +3,7 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { describe, expect, it } from "vitest";
-import { newUrlFromString, SecureUrl } from "../req/http";
+import { newUrlFromString, SecureUrl } from "../http";
 import { newOriginFromString, newOriginFromUrl } from "./origin";
 import { identity, pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";

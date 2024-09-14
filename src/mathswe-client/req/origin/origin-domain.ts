@@ -6,19 +6,19 @@ import {
     MathSwe,
     mathsweFromString,
     mathsweToDomainName,
-} from "../domain/mathswe";
-import { match, withMatchVariant } from "../../mathswe-ts/adt";
+} from "../../domain/mathswe";
+import { match, withMatchVariant } from "../../../mathswe-ts/adt";
 import { pipe } from "fp-ts/function";
 import {
     ThirdParty,
     thirdPartyFromString,
     thirdPartyToDomainName,
-} from "../domain/third-party";
-import { ToDomainName } from "../domain/domain";
-import { FromString } from "../../mathswe-ts/string";
+} from "../../domain/third-party";
+import { ToDomainName } from "../../domain/domain";
+import { FromString } from "../../../mathswe-ts/string";
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
-import { Hostname, SecureUrl } from "../req/http";
+import { Hostname, SecureUrl } from "../http";
 
 export type OriginDomain
     = { tag: "MathSweDomain", mathswe: MathSwe }
