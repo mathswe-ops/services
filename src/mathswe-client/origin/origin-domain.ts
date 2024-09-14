@@ -18,7 +18,7 @@ import { ToDomainName } from "../domain/domain";
 import { FromString } from "../../mathswe-ts/string";
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
-import { identity } from "fp-ts";
+import { Hostname, SecureUrl } from "../req/http";
 
 export type OriginDomain
     = { tag: "MathSweDomain", mathswe: MathSwe }
@@ -78,3 +78,11 @@ export const originDomainFromString: FromString<OriginDomain> = {
         );
     },
 };
+
+export const originDomainFromHostname
+    = ({ domainName }: Hostname): Either<string, OriginDomain> =>
+    originDomainFromString.fromString(domainName);
+
+export const originDomainFromUrl
+    = ({ hostname }: SecureUrl): Either<string, OriginDomain> =>
+    originDomainFromHostname(hostname);
