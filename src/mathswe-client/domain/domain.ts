@@ -3,6 +3,8 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { Option } from "fp-ts/Option";
+import * as E from "fp-ts/Either";
+import { LazyArg, pipe } from "fp-ts/function";
 
 export interface ToDomainName<T> {
     toDomainName(domain: T): string;
@@ -20,6 +22,10 @@ export const partialAccess = (values: string[]): Allowed => ({
 });
 
 export type Access = Option<Allowed>;
+
+export const accessToEither
+    = <L>(left: LazyArg<L>) =>
+    (access: Access) => pipe(access, E.fromOption(left));
 
 export interface PathAccess<T> {
     pathAccess(domain: T): Access;
