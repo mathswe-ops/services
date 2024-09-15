@@ -3,7 +3,7 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { describe, expect, it } from "vitest";
-import { newUrlFromString, SecureUrl } from "../http";
+import { newPathFromString, newUrlFromString, SecureUrl } from "../http";
 import { newOriginFromString, newOriginFromUrl } from "./origin";
 import { pipe } from "fp-ts/function";
 import { isLeft, isRight, left } from "fp-ts/Either";
@@ -23,10 +23,12 @@ describe("newOriginFromUrl", () => {
 
             expect(isRight(result)).toBe(true);
 
-            const { domain, url } = requireRight(result);
+            const { domain, path, url } = requireRight(result);
             const expectedDomain = mathSweDomain("MathSweCom");
+            const expectedPath = pipe("", newPathFromString, requireRight);
 
             expect(domain).toEqual(expectedDomain);
+            expect(path).toEqual(expectedPath);
             expect(url).toEqual(secureUrl);
         },
     );
@@ -41,8 +43,9 @@ describe("newOriginFromString", () => {
 
             expect(isRight(result)).toBe(true);
 
-            const { domain, url } = requireRight(result);
+            const { domain, path, url } = requireRight(result);
             const expectedDomain = mathSweDomain("MathSweCom");
+            const expectedPath = pipe("", newPathFromString, requireRight);
             const expectedUrl: SecureUrl = pipe(
                 "https://mathswe.com",
                 newUrlFromString,
@@ -50,6 +53,7 @@ describe("newOriginFromString", () => {
             );
 
             expect(domain).toEqual(expectedDomain);
+            expect(path).toEqual(expectedPath);
             expect(url).toEqual(expectedUrl);
         },
     );
@@ -60,5 +64,48 @@ describe("newOriginFromString", () => {
 
         expect(isLeft(result)).toBe(true);
         expect(result).toEqual(left("URL does not have the HTTPS protocol."));
+    });
+});
+
+describe("newOriginFromUrl", () => {
+    it(
+        "should return a valid Origin when domain and path are allowed",
+        () => {
+            const expectedUrl: SecureUrl = pipe(
+                "https://mathswe.com/valid-path",
+                newUrlFromString,
+                requireRight,
+            );
+
+            const result = newOriginFromUrl(expectedUrl);
+            const { domain, path, url } = requireRight(result);
+            const expectedDomain = mathSweDomain("MathSweCom");
+            const expectedPath = pipe(
+                "valid-path",
+                newPathFromString,
+                requireRight,
+            );
+
+            expect(domain).toEqual(expectedDomain);
+            expect(path).toEqual(expectedPath);
+            expect(url).toEqual(expectedUrl);
+        },
+    );
+
+    it("should return an error if the domain is disallowed", () => {
+        const result = newOriginFromString("example.com/some-path");
+
+        expect(isLeft(result)).toBe(true);
+    });
+
+    it("should return an error if the path is restricted", () => {
+        const url: SecureUrl = pipe(
+            "https://github.com/restricted-path",
+            newUrlFromString,
+            requireRight,
+        );
+        const result = newOriginFromUrl(url);
+
+        expect(isLeft(result)).toBe(true);
     });
 });
