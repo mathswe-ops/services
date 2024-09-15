@@ -4,6 +4,10 @@
 
 import { Either } from "fp-ts/Either";
 
+export interface ToString<T> {
+    toString(value: T): string;
+}
+
 export interface FromString<T> {
     fromString(string: string): Either<string, T>;
 }
