@@ -12,7 +12,7 @@ import {
 } from "./origin-domain";
 import { isLeft, isRight, left, right } from "fp-ts/Either";
 
-describe("toDomainName", () => {
+describe("toDomainName for OriginDomain", () => {
     it("should return the correct domain name for MathSweCom", () => {
         const domain: OriginDomain = mathSweDomain("MathSweCom");
         const result = toDomainName.toDomainName(domain);
@@ -42,7 +42,7 @@ describe("toDomainName", () => {
     });
 });
 
-describe("FromString", () => {
+describe("FromString for OriginDomain", () => {
     it(
         "should return Right(MathSweCom) when the input is \"mathswe.com\"",
         () => {
