@@ -13,9 +13,10 @@ describe("SumTypeMap", () => {
     const circle: Shape = { tag: "Circle", radius: 1 };
 
     it("should match sum type variants with type safe exhaustive map", () => {
-        const label = (shape: Shape) => match(
-            { "Point": "point-variant", "Circle": "circle-variant" },
-        )(shape);
+        const label = (shape: Shape) => match({
+            Point: "point-variant",
+            Circle: "circle-variant",
+        })(shape);
 
         expect(label(point)).toBe("point-variant");
         expect(label(circle)).toBe("circle-variant");
@@ -24,9 +25,10 @@ describe("SumTypeMap", () => {
     it("should pipe match with type safe exhaustive map", () => {
         const label = (shape: Shape) => pipe(
             shape,
-            match(
-                { "Point": "point-variant", "Circle": "circle-variant" },
-            ),
+            match({
+                Point: "point-variant",
+                Circle: "circle-variant",
+            }),
         );
 
         expect(label(point)).toBe("point-variant");
@@ -44,11 +46,10 @@ describe("SumTypeMap", () => {
 
             return pipe(
                 shape,
-                match(
-                    {
-                        "Point": 0,
-                        "Circle": withShapeVariant(circleArea),
-                    }),
+                match({
+                    Point: 0,
+                    Circle: withShapeVariant(circleArea),
+                }),
             );
         };
 
