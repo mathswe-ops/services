@@ -5,12 +5,16 @@
 import { describe, expect, it } from "vitest";
 import {
     mathSweDomain,
+    newOriginPathFromDomain,
     OriginDomain,
     originDomainFromString,
     thirdPartyDomain,
     toDomainName,
 } from "./origin-domain";
 import { isLeft, isRight, left, right } from "fp-ts/Either";
+import { pipe } from "fp-ts/function";
+import { requireRight } from "../../../mathswe-ts/require";
+import { newPathFromString } from "../http";
 
 describe("toDomainName for OriginDomain", () => {
     it("should return the correct domain name for MathSweCom", () => {
@@ -72,4 +76,50 @@ describe("FromString for OriginDomain", () => {
             expect(result).toEqual(left("Unaccepted origin domain."));
         },
     );
+});
+
+describe("newOriginPathFromDomain", () => {
+    it("should return path for FullAccess domain", () => {
+        const domain: OriginDomain = pipe(
+            "mathswe.com",
+            originDomainFromString.fromString,
+            requireRight,
+        );
+
+        const path = "/any-path";
+        const expected = right(pipe(path, newPathFromString, requireRight));
+        const result = pipe(path, newOriginPathFromDomain(domain));
+
+        expect(result).toEqual(expected);
+    });
+
+    it("should return an error for a restricted domain path", () => {
+        const domain: OriginDomain = pipe(
+            "github.com",
+            originDomainFromString.fromString,
+            requireRight,
+        );
+
+        // github.com/restricted-path random user
+        const path = "restricted-path";
+        const expected = left(`Path ${ path } of domain ${ domain } is restricted.`);
+        const result = pipe(path, newOriginPathFromDomain(domain));
+
+        expect(result).toEqual(expected);
+    });
+
+    it("should accept partially allowed path", () => {
+        const domain: OriginDomain = pipe(
+            "github.com",
+            originDomainFromString.fromString,
+            requireRight,
+        );
+
+        // github.com/mathswe organization
+        const path = "mathswe";
+        const expected = right(pipe(path, newPathFromString, requireRight));
+        const result = pipe(path, newOriginPathFromDomain(domain));
+
+        expect(result).toEqual(expected);
+    });
 });

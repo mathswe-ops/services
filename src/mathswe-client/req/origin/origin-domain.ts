@@ -5,20 +5,28 @@
 import {
     MathSwe,
     mathsweFromString,
+    mathswePathAccess,
     mathsweToDomainName,
 } from "../../domain/mathswe";
 import { match, withMatchVariant } from "../../../mathswe-ts/adt";
-import { pipe } from "fp-ts/function";
+import { identity, pipe } from "fp-ts/function";
 import {
     ThirdParty,
     thirdPartyFromString,
+    thirdPartyPathAccess,
     thirdPartyToDomainName,
 } from "../../domain/third-party";
-import { ToDomainName } from "../../domain/domain";
+import {
+    Access,
+    accessToEither,
+    Allowed,
+    ToDomainName,
+} from "../../domain/domain";
 import { FromString } from "../../../mathswe-ts/string";
+import * as O from "fp-ts/Option";
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
-import { Hostname, SecureUrl } from "../http";
+import { Hostname, newPathFromString, Path, SecureUrl } from "../http";
 
 export type OriginDomain
     = { tag: "MathSweDomain", mathswe: MathSwe }
@@ -86,3 +94,65 @@ export const originDomainFromHostname
 export const originDomainFromUrl
     = ({ hostname }: SecureUrl): Either<string, OriginDomain> =>
     originDomainFromHostname(hostname);
+
+export type OriginPath = Path;
+
+export const newOriginPathFromDomain = (domain: OriginDomain) => {
+    const pathHasAccess = (path: string) => (allowed: Allowed): boolean => {
+        const withAllowedVariant = withMatchVariant<boolean>(allowed);
+
+        const findAllowedPath = (allowedPaths: string[]) =>
+            allowedPaths.find(allowedPath => path.startsWith(allowedPath));
+
+        type PartialAccess = { values: string[] };
+
+        const belongsToPartialAccess = ({ values }: PartialAccess): boolean => pipe(
+            values,
+            findAllowedPath,
+            O.fromNullable,
+            O.isSome,
+        );
+
+        return pipe(
+            allowed,
+            match({
+                FullAccess: () => true,
+                PartialAccess: withAllowedVariant(belongsToPartialAccess),
+            }),
+        );
+    };
+
+    const wrapEither
+        = (path: string) => (hasAccess: boolean): Either<string, string> => pipe(
+        hasAccess,
+        E.fromPredicate(
+            identity,
+            _ => `Path ${ path } of domain ${ domain } is restricted.`,
+        ),
+        E.map(_ => path),
+    );
+
+    const mathsweAccess = ({ mathswe }: { mathswe: MathSwe }) =>
+        mathswePathAccess.pathAccess(mathswe);
+
+    const thirdPartyAccess = ({ thirdParty }: { thirdParty: ThirdParty }) =>
+        thirdPartyPathAccess.pathAccess(thirdParty);
+
+    const withDomainVariant = withMatchVariant<Access>(domain);
+
+    const domainAccess: Access = pipe(
+        domain,
+        match({
+            MathSweDomain: withDomainVariant(mathsweAccess),
+            ThirdPartyDomain: withDomainVariant(thirdPartyAccess),
+        }),
+    );
+
+    return (path: string): Either<string, OriginPath> => pipe(
+        domainAccess,
+        accessToEither(() => `Access disallowed to paths of domain ${ domain }`),
+        E.map(pathHasAccess(path)),
+        E.flatMap(wrapEither(path)),
+        E.flatMap(newPathFromString),
+    );
+};
