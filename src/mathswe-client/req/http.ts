@@ -5,6 +5,8 @@
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import { Either, left, right } from "fp-ts/Either";
+import { ToString } from "../../mathswe-ts/string";
+import * as Path from "node:path";
 
 export type Hostname = {
     domainName: string,
@@ -38,6 +40,12 @@ export const newPathFromString = (path: string): Either<string, Path> => pipe(
     path.split('/').filter(Boolean),
     right
 );
+
+export const pathToString: ToString<Path> = {
+    toString(value: Path): string {
+        return value.join("/");
+    },
+};
 
 export type SecureUrl = {
     hostname: Hostname,
