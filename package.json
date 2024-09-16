@@ -27,6 +27,7 @@
         "wrangler": "^3.77.0"
     },
     "dependencies": {
-        "fp-ts": "^2.16.9"
+        "fp-ts": "^2.16.9",
+        "itty-router": "^5.0.18"
     }
 }
