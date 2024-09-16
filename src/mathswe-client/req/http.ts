@@ -13,7 +13,7 @@ export type Hostname = {
     subdomain: string,
 }
 
-const validHostnameRegex = /^[a-z0-9.]+$/;
+const validHostnameRegex = /^[a-z0-9.-]+$/;
 
 const isValidHostname = (hostname: string): Either<string, string> =>
     validHostnameRegex.test(hostname)

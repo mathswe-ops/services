@@ -38,6 +38,19 @@ describe("newHostnameFromString", () => {
     );
 
     test(
+        "should return valid Hostname for a hostname with hyphened subdomain",
+        () => {
+            const input = "cors-test.codehappy.dev";
+            const expected = right({
+                domainName: "codehappy.dev",
+                subdomain: "cors-test",
+            });
+
+            expect(newHostnameFromString(input)).toEqual(expected);
+        },
+    );
+
+    test(
         "should return an error for an invalid hostname with uppercase letters",
         () => {
             const input = "Sub.Example.Com";
