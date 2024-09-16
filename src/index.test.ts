@@ -1,28 +1,34 @@
-import { unstable_dev } from 'wrangler';
-import type { UnstableDevWorker } from 'wrangler';
-import { describe, expect, it, beforeAll, afterAll } from 'vitest';
+// Copyright (c) 2024 Tobias Briones. All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// This file is part of https://github.com/mathswe-ops/services
 
-describe('Worker', () => {
-	let worker: UnstableDevWorker;
+import type { UnstableDevWorker } from "wrangler";
+import { unstable_dev } from "wrangler";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-	beforeAll(async () => {
-		worker = await unstable_dev('src/index.ts', {
-			experimental: { disableExperimentalWarning: true },
-		});
-	});
+describe("Worker", () => {
+    let worker: UnstableDevWorker;
 
-	afterAll(async () => {
-		await worker.stop();
-	});
+    beforeAll(async () => {
+        worker = await unstable_dev("src/index.ts", {
+            experimental: { disableExperimentalWarning: true },
+        });
+    });
 
-	it('should return 200 response', async () => {
-		const resp = await worker.fetch();
-		expect(resp.status).toBe(200);
-	});
+    afterAll(async () => {
+        await worker.stop();
+    });
 
-	it('should return the text Hello World!', async () => {
-		const resp = await worker.fetch();
-		const text = await resp.text();
-		expect(text).toBe('Hello World!');
-	});
+    it("should return 200 response", async () => {
+        const resp = await worker.fetch();
+
+        expect(resp.status).toBe(200);
+    });
+
+    it("should return the text Hello World!", async () => {
+        const resp = await worker.fetch();
+        const text = await resp.text();
+
+        expect(text).toBe("Hello World!");
+    });
 });
