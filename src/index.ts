@@ -19,6 +19,6 @@ const router = AutoRouter({
 });
 
 router
-    .get("/", () => (new Response("Hello World!")));
+    .get("/", () => (new Response("MathSwe Ops Services")));
 
 export default router;
