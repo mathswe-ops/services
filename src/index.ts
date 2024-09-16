@@ -3,11 +3,13 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { AutoRouter, cors } from "itty-router";
+import { getCorsOrigin } from "./mathswe-client/req/client/client-req";
 
 export interface Env {
 }
 
 const { preflight, corsify } = cors({
+    origin: getCorsOrigin,
     allowMethods: ["GET"],
 });
 
