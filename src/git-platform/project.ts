@@ -61,7 +61,7 @@ export async function inferVersion(
     let result;
 
     if (E.isRight(systemFound)) {
-        const system = pipe(systemFound, requireRight);
+        const system = systemFound.right;
 
         result = await readProjectVersion(gitPlatform, repoUrl, path, system);
     }
