@@ -10,7 +10,6 @@ import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import { Either, left, right } from "fp-ts/Either";
 import { matchPlain } from "../mathswe-ts/enum";
-import { requireRight } from "../mathswe-ts/require";
 
 export type BuildSystem = { tag: "Npm" } | { tag: "Cargo" };
 
@@ -25,19 +24,6 @@ export const buildFile = (system: BuildSystem): string => pipe(
         Cargo: "Cargo.toml",
     }),
 );
-
-export function readBuildSystem(
-    gitPlatform: GitPlatform,
-    repoUrl: string,
-    path: Option<string>,
-): Promise<Either<string, Option<BuildSystem>>> {
-    return pipe(
-        gitPlatform,
-        matchPlain({
-            GitHub: readBuildSystemOnGitHub(repoUrl, path),
-        }),
-    );
-}
 
 export async function inferVersion(
     gitPlatform: GitPlatform,
@@ -72,7 +58,20 @@ export async function inferVersion(
     return result;
 }
 
-type GitHubRepoContent = {
+export function readBuildSystem(
+    gitPlatform: GitPlatform,
+    repoUrl: string,
+    path: Option<string>,
+): Promise<Either<string, Option<BuildSystem>>> {
+    return pipe(
+        gitPlatform,
+        matchPlain({
+            GitHub: readBuildSystemOnGitHub(repoUrl, path),
+        }),
+    );
+}
+
+export type GitHubRepoContent = {
     name: string,
 }
 
