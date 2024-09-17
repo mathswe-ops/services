@@ -4,7 +4,7 @@
 
 import { FromString } from "../mathswe-ts/string";
 import * as E from "fp-ts/Either";
-import { Either } from "fp-ts/Either";
+import { Either, left } from "fp-ts/Either";
 import { pipe } from "fp-ts/function";
 import { matchPlain } from "../mathswe-ts/enum";
 
@@ -32,6 +32,29 @@ export const gitPlatformToUrl = (gitProvider: GitPlatform): string => pipe(
     }),
     domainName => `https://${ domainName }`,
 );
+
+export const gitPlatformFromUrl = (urlRaw: string): Either<string, GitPlatform> => {
+    const baseUrlToGitPlatform: Record<string, GitPlatform | undefined> = {
+        "https://github.com": gitHub,
+    };
+
+    let result: Either<string, GitPlatform>;
+
+    try {
+        const url = new URL(urlRaw);
+        const baseUrl = `${ url.protocol }//${ url.host }`;
+
+        result = pipe(
+            baseUrlToGitPlatform[baseUrl],
+            E.fromNullable("GitPlatform not found."),
+        );
+    }
+    catch (error) {
+        result = left(`Invalid URL: ${ error }`);
+    }
+
+    return result;
+};
 
 export const repoToUrl
     = (provider: GitPlatform, user: string, repo: string): string => pipe(
