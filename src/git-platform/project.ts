@@ -71,7 +71,7 @@ export function readBuildSystem(
     );
 }
 
-type GitHubRepoContent = {
+export type GitHubRepoContent = {
     name: string,
 }
 
