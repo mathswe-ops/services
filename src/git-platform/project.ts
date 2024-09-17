@@ -25,19 +25,6 @@ export const buildFile = (system: BuildSystem): string => pipe(
     }),
 );
 
-export function readBuildSystem(
-    gitPlatform: GitPlatform,
-    repoUrl: string,
-    path: Option<string>,
-): Promise<Either<string, Option<BuildSystem>>> {
-    return pipe(
-        gitPlatform,
-        matchPlain({
-            GitHub: readBuildSystemOnGitHub(repoUrl, path),
-        }),
-    );
-}
-
 export async function inferVersion(
     gitPlatform: GitPlatform,
     user: string,
@@ -69,6 +56,19 @@ export async function inferVersion(
     }
 
     return result;
+}
+
+export function readBuildSystem(
+    gitPlatform: GitPlatform,
+    repoUrl: string,
+    path: Option<string>,
+): Promise<Either<string, Option<BuildSystem>>> {
+    return pipe(
+        gitPlatform,
+        matchPlain({
+            GitHub: readBuildSystemOnGitHub(repoUrl, path),
+        }),
+    );
 }
 
 type GitHubRepoContent = {
