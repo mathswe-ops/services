@@ -10,7 +10,6 @@ import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import { Either, left, right } from "fp-ts/Either";
 import { matchPlain } from "../mathswe-ts/enum";
-import { requireRight } from "../mathswe-ts/require";
 
 export type BuildSystem = { tag: "Npm" } | { tag: "Cargo" };
 
