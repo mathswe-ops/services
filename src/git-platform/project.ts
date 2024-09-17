@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // This file is part of https://github.com/mathswe-ops/services
 
-import { GitPlatform, gitPlatformFromUrl } from "./git-platform";
+import { GitPlatform, repoToUrl } from "./git-platform";
 import * as toml from "@iarna/toml";
 import * as O from "fp-ts/Option";
 import { none, Option, some } from "fp-ts/Option";
@@ -39,16 +39,32 @@ export function readBuildSystem(
 }
 
 export async function inferVersion(
-    repoUrl: string,
+    gitPlatform: GitPlatform,
+    user: string,
+    repo: string,
 ): Promise<Either<string, string>> {
-    const gitPlatform = gitPlatformFromUrl(repoUrl);
+    const repoUrl = repoToUrl(gitPlatform, user, repo);
+    const systemResult = await readBuildSystem(gitPlatform, repoUrl);
+
+    const systemFound = pipe(
+        systemResult,
+        E.flatMap(
+            O.match(
+                () => left(`Fail to find a build system on ${ repoUrl }`),
+                system => right(system),
+            ),
+        ),
+    );
+
     let result;
 
-    if (E.isRight(gitPlatform)) {
-        result = await inferVersionFrom(gitPlatform.right, repoUrl);
+    if (E.isRight(systemFound)) {
+        const system = pipe(systemFound, requireRight);
+
+        result = await readProjectVersion(gitPlatform, repoUrl, system);
     }
     else {
-        result = gitPlatform;
+        result = systemFound;
     }
 
     return result;
@@ -137,36 +153,6 @@ async function fetchFileListOnGitHub(
     }
     catch (error) {
         result = left(`Failed to fetch files: ${ (error as Error).message }`);
-    }
-
-    return result;
-}
-
-async function inferVersionFrom(
-    gitPlatform: GitPlatform,
-    repoUrl: string,
-): Promise<Either<string, string>> {
-    const systemResult = await readBuildSystem(gitPlatform, repoUrl);
-
-    const systemFound = pipe(
-        systemResult,
-        E.flatMap(
-            O.match(
-                () => left(`Fail to find a build system on ${ repoUrl }`),
-                system => right(system),
-            ),
-        ),
-    );
-
-    let result;
-
-    if (E.isRight(systemFound)) {
-        const system = pipe(systemFound, requireRight);
-
-        result = await readProjectVersion(gitPlatform, repoUrl, system);
-    }
-    else {
-        result = systemFound;
     }
 
     return result;
