@@ -28,12 +28,13 @@ export const buildFile = (system: BuildSystem): string => pipe(
 
 export function readBuildSystem(
     gitPlatform: GitPlatform,
-    url: string,
+    repoUrl: string,
+    path: Option<string>,
 ): Promise<Either<string, Option<BuildSystem>>> {
     return pipe(
         gitPlatform,
         matchPlain({
-            GitHub: readBuildSystemOnGitHub(url),
+            GitHub: readBuildSystemOnGitHub(repoUrl, path),
         }),
     );
 }
@@ -42,9 +43,10 @@ export async function inferVersion(
     gitPlatform: GitPlatform,
     user: string,
     repo: string,
+    path: Option<string>,
 ): Promise<Either<string, string>> {
     const repoUrl = repoToUrl(gitPlatform, user, repo);
-    const systemResult = await readBuildSystem(gitPlatform, repoUrl);
+    const systemResult = await readBuildSystem(gitPlatform, repoUrl, path);
 
     const systemFound = pipe(
         systemResult,
@@ -61,7 +63,7 @@ export async function inferVersion(
     if (E.isRight(systemFound)) {
         const system = pipe(systemFound, requireRight);
 
-        result = await readProjectVersion(gitPlatform, repoUrl, system);
+        result = await readProjectVersion(gitPlatform, repoUrl, path, system);
     }
     else {
         result = systemFound;
@@ -103,9 +105,10 @@ function detectBuildSystemOnGitHub(
 }
 
 async function readBuildSystemOnGitHub(
-    url: string,
+    repoUrl: string,
+    path: Option<string>,
 ): Promise<Either<string, Option<BuildSystem>>> {
-    const result = await fetchFileListOnGitHub(url);
+    const result = await fetchFileListOnGitHub(repoUrl, path);
 
     return pipe(
         result,
@@ -115,10 +118,12 @@ async function readBuildSystemOnGitHub(
 
 async function fetchFileListOnGitHub(
     repoUrl: string,
+    path: Option<string>,
 ): Promise<Either<string, GitHubRepoContent[]>> {
+    const rootPath = pipe(path, O.getOrElse(() => ""));
     const apiUrl = repoUrl
         .replace("https://github.com/", "https://api.github.com/repos/")
-        .concat("/contents/");
+        .concat(`/contents/${ rootPath }`);
 
     const init = {
         headers: {
@@ -161,22 +166,33 @@ async function fetchFileListOnGitHub(
 async function readProjectVersion(
     gitPlatform: GitPlatform,
     repoUrl: string,
+    path: Option<string>,
     system: BuildSystem,
 ): Promise<Either<string, string>> {
     return pipe(
         gitPlatform,
         matchPlain({
-            GitHub: readProjectVersionOnGitHub(repoUrl, system),
+            GitHub: readProjectVersionOnGitHub(repoUrl, path, system),
         }),
     );
 }
 
 async function readProjectVersionOnGitHub(
     repoUrl: string,
+    path: Option<string>,
     system: BuildSystem,
 ): Promise<Either<string, string>> {
-    const filename = buildFile(system);
-    const fileResult = await readFileOnGitHub(repoUrl, "main", filename);
+    const buildFileName = buildFile(system);
+    const filePath = pipe(
+        path,
+        O.map(root =>
+            root.endsWith("/")
+            ? `${ root }${ buildFileName }`
+            : `${ root }/${ buildFileName }`,
+        ),
+        O.getOrElse(() => buildFileName),
+    );
+    const fileResult = await readFileOnGitHub(repoUrl, "main", filePath);
 
     return pipe(
         fileResult,
