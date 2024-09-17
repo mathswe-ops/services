@@ -3,13 +3,13 @@
 // This file is part of https://github.com/mathswe-ops/services
 
 import { GitPlatform, repoToUrl } from "./git-platform";
-import * as toml from "@iarna/toml";
 import * as O from "fp-ts/Option";
 import { none, Option, some } from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 import * as E from "fp-ts/Either";
 import { Either, left, right } from "fp-ts/Either";
 import { matchPlain } from "../mathswe-ts/enum";
+import * as toml from "toml";
 
 export type BuildSystem = { tag: "Npm" } | { tag: "Cargo" };
 
