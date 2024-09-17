@@ -27,6 +27,8 @@
         "wrangler": "^3.77.0"
     },
     "dependencies": {
+        "@iarna/toml": "^1.7.1",
+        "@types/iarna__toml": "^2.0.5",
         "fp-ts": "^2.16.9",
         "itty-router": "^5.0.18"
     }
