@@ -22,7 +22,7 @@ export const newVersionFromString = (string: string): Either<string, Version> =>
 export const newProjectBadge = (project: string, icon64: string) => {
     const padding = 18;
     const length = project.length;
-    const textLength = (length / 7) * 55;
+    const textLength = (length / 7) * 56;
     const projectRectWidth = textLength + padding * 2;
     const textX = 96 + padding;
     const totalWidth = 96 + projectRectWidth;

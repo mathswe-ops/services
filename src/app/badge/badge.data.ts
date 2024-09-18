@@ -29,28 +29,28 @@ export const projectBadgeTemplate = `
      aria-label="{{project}}">
     <title>{{project}}</title>
     <g shape-rendering="crispEdges">
-        <rect width="96" height="28" fill="#555"/>
-        <rect x="96" width="{{projectRectWidth}}" height="28" fill="#0277bd"/>
+        <rect width="97" height="28" fill="#555"/>
+        <rect x="97" width="{{projectRectWidth}}" height="28" fill="#0277bd"/>
     </g>
     <g fill="#fff"
        text-anchor="middle"
        font-family="Poppins Medium,sans-serif"
        text-rendering="geometricPrecision"
-       font-size="10">
+       font-size="12">
         <image x="9"
                y="7"
                width="14"
                height="14"
                xlink:href="{{icon64}}"/>
         <text x="32"
-              y="16"
+              y="18"
               text-anchor="start"
-              textLength="55"
+              textLength="56"
               fill="#fff">
           PROJECT
         </text>
         <text x="{{textX}}"
-              y="16"
+              y="18"
               text-anchor="start"
               textLength="{{textLength}}"
               fill="#fff"
