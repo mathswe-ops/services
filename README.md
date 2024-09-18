@@ -24,6 +24,44 @@ Run tests with `npm run test`.
 To deploy, login to the Wrangler CLI via `wrangler login`, and run `npm run 
 deploy`.
 
+## API
+
+The application is currently running at
+[mathswe-ops-services.tobiasbriones-dev.workers.dev](https://mathswe-ops-services.tobiasbriones-dev.workers.dev).
+
+| Method | Endpoint                                  | Description                  | Parameters                                                                                                                                                                      |
+|--------|-------------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GET    | `/`                                       | Welcome message              | None                                                                                                                                                                            |
+| GET    | `/badge/version/:gitPlatform/:user/:repo` | Badge for repository version | `:gitPlatform` - Only GitHub supported<br>`:user` - Repository user or Org<br>`:repo` - Repository name<br> `?path` - Project's root subdirectory (e.g., a microservice or MVP) |
+| GET    | `/badge/project/:project`                 | Main badge for a project     | `:project` - MathSwe project name<br>`?mvp` - Flag for MVP versions                                                                                                             |
+
+`Version Badge Types`
+
+```ts
+type VersionBadgeParams = {
+    gitPlatform: GitPlatform,
+    user: string,
+    repo: string,
+    root: Option<string>
+}
+```
+
+`Project Badge Types`
+
+```ts
+type Project
+    = { tag: "Msw" }
+    | { tag: "MathSoftware" }
+    | { tag: "Repsymo" }
+    | { tag: "Texsydo" }
+    | { tag: "MathSweOps" }
+    | { tag: "MathSweSystemOps" }
+    | { tag: "MathSweOpsServices" }
+    | { tag: "MathSwe" }
+```
+
+Recall the URL param is lowercase, e.g. `MathSoftware => math-software`.
+
 ## Contact
 
 Tobias Briones: [GitHub](https://github.com/tobiasbriones)
