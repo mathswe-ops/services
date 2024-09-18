@@ -60,3 +60,37 @@ export const projectBadgeTemplate = `
     </g>
 </svg>
 `;
+
+export const versionBadgeTemplate = `
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="{{totalWidth}}"
+     height="20"
+     role="img"
+     aria-label="release v{{version}}">
+    <title>release v{{version}}</title>
+    <g shape-rendering="crispEdges">
+        <rect width="48" height="20" fill="#555"/>
+        <rect x="48" width="{{versionRectWidth}}" height="20" fill="#007ec6"/>
+    </g>
+    <g fill="#fff"
+       text-anchor="middle"
+       font-family="Poppins Medium,sans-serif"
+       text-rendering="geometricPrecision"
+       font-size="110">
+        <text x="255"
+              y="140"
+              transform="scale(.1)"
+              fill="#fff"
+              textLength="390">
+          release
+        </text>
+        <text x="{{textX}}"
+              y="140"
+              transform="scale(.1)"
+              fill="#fff"
+              textLength="{{textLength}}">
+          v{{version}}
+        </text>
+    </g>
+</svg>
+`;
