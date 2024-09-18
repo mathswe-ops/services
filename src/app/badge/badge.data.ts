@@ -94,3 +94,37 @@ export const versionBadgeTemplate = `
     </g>
 </svg>
 `;
+
+export const versionNotFoundBadge = `
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="115"
+     height="20"
+     role="img"
+     aria-label="not found">
+    <title>not found</title>
+    <g shape-rendering="crispEdges">
+        <rect width="48" height="20" fill="#555"/>
+        <rect x="48" width="69" height="20" fill="#D32F2F"/>
+    </g>
+    <g fill="#fff"
+       text-anchor="middle"
+       font-family="Poppins Medium,sans-serif"
+       text-rendering="geometricPrecision"
+       font-size="110">
+        <text x="255"
+              y="140"
+              transform="scale(.1)"
+              fill="#fff"
+              textLength="390">
+          release
+        </text>
+        <text x="805"
+              y="140"
+              transform="scale(.1)"
+              fill="#fff"
+              textLength="504">
+          not found
+        </text>
+    </g>
+</svg>
+`;

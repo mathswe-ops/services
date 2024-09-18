@@ -18,9 +18,9 @@ import { inferVersion } from "../../git-platform/project";
 import {
     newVersionBadge,
     newVersionFromString,
-    notFoundBadge,
 } from "./badge-template";
 import { domainErrorToIttyError, Kv, RawKv } from "./badge";
+import { versionNotFoundBadge } from "./badge.data";
 
 type VersionBadgeParams = {
     gitPlatform: GitPlatform,
@@ -124,7 +124,7 @@ async function respondVersionBadge(
         result = domainErrorToIttyError(versionBadge);
 
         if (result.status === 404) {
-            result = wrapResponse(notFoundBadge);
+            result = wrapResponse(versionNotFoundBadge);
         }
     }
 
