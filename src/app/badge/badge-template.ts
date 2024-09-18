@@ -19,22 +19,6 @@ export const newVersionFromString = (string: string): Either<string, Version> =>
     );
 };
 
-export const newVersionBadge = (version: Version): string => {
-    const letterWidth = 56;
-    const length = version.length;
-    const textLength = letterWidth * length;
-    const textX = 255 + textLength + (4*letterWidth);
-    const versionRectWidth = 8 * length + 24;
-    const totalWidth = 48 + versionRectWidth;
-
-    return versionBadgeTemplate
-        .replaceAll("{{version}}", version)
-        .replaceAll("{{textLength}}", textLength.toString())
-        .replaceAll("{{totalWidth}}", totalWidth.toString())
-        .replaceAll("{{textX}}", textX.toString())
-        .replaceAll("{{versionRectWidth}}", versionRectWidth.toString());
-};
-
 export const newProjectBadge = (project: string, icon64: string) => {
     const padding = 18;
     const length = project.length;
@@ -50,4 +34,20 @@ export const newProjectBadge = (project: string, icon64: string) => {
         .replaceAll("{{totalWidth}}", totalWidth.toString())
         .replaceAll("{{textX}}", textX.toString())
         .replaceAll("{{projectRectWidth}}", projectRectWidth.toString());
+};
+
+export const newVersionBadge = (version: Version): string => {
+    const padding = 18;
+    const length = version.length;
+    const textLength = (length / 7) * 42;
+    const versionRectWidth = textLength + padding * 2;
+    const textX = 60 + padding;
+    const totalWidth = 60 + versionRectWidth;
+
+    return versionBadgeTemplate
+        .replaceAll("{{version}}", version)
+        .replaceAll("{{textLength}}", textLength.toString())
+        .replaceAll("{{totalWidth}}", totalWidth.toString())
+        .replaceAll("{{textX}}", textX.toString())
+        .replaceAll("{{versionRectWidth}}", versionRectWidth.toString());
 };

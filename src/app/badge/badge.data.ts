@@ -69,25 +69,25 @@ export const versionBadgeTemplate = `
      aria-label="release v{{version}}">
     <title>release v{{version}}</title>
     <g shape-rendering="crispEdges">
-        <rect width="48" height="20" fill="#555"/>
-        <rect x="48" width="{{versionRectWidth}}" height="20" fill="#007ec6"/>
+        <rect width="60" height="20" fill="#555"/>
+        <rect x="60" width="{{versionRectWidth}}" height="20" fill="#007ec6"/>
     </g>
     <g fill="#fff"
        text-anchor="middle"
        font-family="Poppins Medium,sans-serif"
        text-rendering="geometricPrecision"
-       font-size="110">
-        <text x="255"
-              y="140"
-              transform="scale(.1)"
+       font-size="10">
+        <text x="9"
+              y="14"
               fill="#fff"
-              textLength="390">
+              text-anchor="start"
+              textLength="42">
           release
         </text>
         <text x="{{textX}}"
-              y="140"
-              transform="scale(.1)"
+              y="14"
               fill="#fff"
+              text-anchor="start"
               textLength="{{textLength}}">
           v{{version}}
         </text>
@@ -97,32 +97,32 @@ export const versionBadgeTemplate = `
 
 export const versionNotFoundBadge = `
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="115"
+     width="150"
      height="20"
      role="img"
      aria-label="not found">
     <title>not found</title>
     <g shape-rendering="crispEdges">
-        <rect width="48" height="20" fill="#555"/>
-        <rect x="48" width="69" height="20" fill="#D32F2F"/>
+        <rect width="60" height="20" fill="#555"/>
+        <rect x="60" width="90" height="20" fill="#D32F2F"/>
     </g>
     <g fill="#fff"
        text-anchor="middle"
        font-family="Poppins Medium,sans-serif"
        text-rendering="geometricPrecision"
-       font-size="110">
-        <text x="255"
-              y="140"
-              transform="scale(.1)"
+       font-size="10">
+        <text x="9"
+              y="14"
               fill="#fff"
-              textLength="390">
+              text-anchor="start"
+              textLength="42">
           release
         </text>
-        <text x="805"
-              y="140"
-              transform="scale(.1)"
+        <text x="78"
+              y="14"
               fill="#fff"
-              textLength="504">
+              text-anchor="start"
+              textLength="54">
           not found
         </text>
     </g>
