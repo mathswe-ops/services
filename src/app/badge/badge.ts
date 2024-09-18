@@ -127,6 +127,7 @@ async function respondVersionBadge(
 function domainErrorToIttyError(left: Left<string>): Response {
     const msg = left.left;
     const possibleReasons = [
+        { reason: "Not Found", code: 404 },
         { reason: "Fail to find a build system", code: 404 },
         { reason: "GitHub API error", code: 502 },
         { reason: "Fail to read project files", code: 500 },

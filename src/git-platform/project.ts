@@ -32,6 +32,33 @@ export async function inferVersion(
     path: Option<string>,
 ): Promise<Either<string, string>> {
     const repoUrl = repoToUrl(gitPlatform, user, repo);
+
+    return pipe(
+        path,
+        O.match(
+            () => inferVersionFromRepo(gitPlatform, repoUrl),
+            root => inferVersionFromBuildSystem(gitPlatform, repoUrl, root),
+        ),
+    );
+}
+
+async function inferVersionFromRepo(
+    gitPlatform: GitPlatform,
+    repoUrl: string,
+): Promise<Either<string, string>> {
+    return pipe(
+        gitPlatform,
+        matchPlain({
+            GitHub: inferVersionFromGitHubRepo(repoUrl),
+        }),
+    );
+}
+
+async function inferVersionFromBuildSystem(
+    gitPlatform: GitPlatform,
+    repoUrl: string,
+    path: string,
+): Promise<Either<string, string>> {
     const systemResult = await readBuildSystem(gitPlatform, repoUrl, path);
 
     const systemFound = pipe(
@@ -49,7 +76,12 @@ export async function inferVersion(
     if (E.isRight(systemFound)) {
         const system = systemFound.right;
 
-        result = await readProjectVersion(gitPlatform, repoUrl, path, system);
+        result = await readProjectVersion(
+            gitPlatform,
+            repoUrl,
+            some(path),
+            system,
+        );
     }
     else {
         result = systemFound;
@@ -61,13 +93,34 @@ export async function inferVersion(
 export function readBuildSystem(
     gitPlatform: GitPlatform,
     repoUrl: string,
-    path: Option<string>,
+    path: string,
 ): Promise<Either<string, Option<BuildSystem>>> {
     return pipe(
         gitPlatform,
         matchPlain({
             GitHub: readBuildSystemOnGitHub(repoUrl, path),
         }),
+    );
+}
+
+export type GitHubTag = {
+    name: string,
+}
+
+async function inferVersionFromGitHubRepo(
+    repoUrl: string,
+): Promise<Either<string, string>> {
+    const tagsResult = await fetchGitHubApi<GitHubTag>(repoUrl, "tags");
+
+    return pipe(
+        tagsResult,
+        E.flatMap(tags =>
+            tags.length === 0
+            ? left("Repository has no tags.")
+            : right(tags[0]),
+        ),
+        E.map(({ name }) => name),
+        E.map(name => name.startsWith("v") ? name.substring(1) : name),
     );
 }
 
@@ -105,7 +158,7 @@ function detectBuildSystemOnGitHub(
 
 async function readBuildSystemOnGitHub(
     repoUrl: string,
-    path: Option<string>,
+    path: string,
 ): Promise<Either<string, Option<BuildSystem>>> {
     const result = await fetchFileListOnGitHub(repoUrl, path);
 
@@ -117,12 +170,18 @@ async function readBuildSystemOnGitHub(
 
 async function fetchFileListOnGitHub(
     repoUrl: string,
-    path: Option<string>,
+    path: string,
 ): Promise<Either<string, GitHubRepoContent[]>> {
-    const rootPath = pipe(path, O.getOrElse(() => ""));
+    return fetchGitHubApi(repoUrl, `contents/${ path }`);
+}
+
+async function fetchGitHubApi<T>(
+    repoUrl: string,
+    route: string,
+): Promise<Either<string, T[]>> {
     const apiUrl = repoUrl
         .replace("https://github.com/", "https://api.github.com/repos/")
-        .concat(`/contents/${ rootPath }`);
+        .concat(`/${ route }`);
 
     const init = {
         headers: {
@@ -142,7 +201,7 @@ async function fetchFileListOnGitHub(
 
         const json
             = E.isRight(okResult)
-              ? await response.json() as GitHubRepoContent[]
+              ? await response.json() as T[]
               : [];
 
         result = pipe(
@@ -151,13 +210,13 @@ async function fetchFileListOnGitHub(
             E.flatMap(data =>
                 Array.isArray(data)
                 ? right(data)
-                : left("Fail to read project files. Ensure to provide the"
+                : left("Fail to read project resources. Ensure to provide the"
                        + " correct repository URL"),
             ),
         );
     }
     catch (error) {
-        result = left(`Failed to fetch files: ${ (error as Error).message }`);
+        result = left(`Failed to fetch resources: ${ (error as Error).message }`);
     }
 
     return result;
