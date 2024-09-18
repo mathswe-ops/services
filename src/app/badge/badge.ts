@@ -15,7 +15,11 @@ import {
     gitPlatformFromString,
 } from "../../git-platform/git-platform";
 import { inferVersion } from "../../git-platform/project";
-import { newVersionBadge, newVersionFromString } from "./badge-template";
+import {
+    newVersionBadge,
+    newVersionFromString,
+    notFoundBadge,
+} from "./badge-template";
 
 type Kv = [string, string];
 
@@ -98,18 +102,20 @@ async function respondVersionBadge(
 ): Promise<Response> {
     const version = await inferVersion(gitPlatform, user, repo, root);
 
+    const wrapResponse = (badge: string) => new Response(
+        badge,
+        {
+            headers: {
+                "Content-Type": "image/svg+xml",
+            },
+        },
+    );
+
     const versionBadge = pipe(
         version,
         E.flatMap(newVersionFromString),
         E.map(newVersionBadge),
-        E.map(badge => new Response(
-            badge,
-            {
-                headers: {
-                    "Content-Type": "image/svg+xml",
-                },
-            },
-        )),
+        E.map(wrapResponse),
     );
 
     let result = error();
@@ -119,6 +125,10 @@ async function respondVersionBadge(
     }
     else if (E.isLeft(versionBadge)) {
         result = domainErrorToIttyError(versionBadge);
+
+        if (result.status === 404) {
+            result = wrapResponse(notFoundBadge);
+        }
     }
 
     return result;
@@ -128,6 +138,7 @@ function domainErrorToIttyError(left: Left<string>): Response {
     const msg = left.left;
     const possibleReasons = [
         { reason: "Not Found", code: 404 },
+        { reason: "Repository has no tags", code: 404 },
         { reason: "Fail to find a build system", code: 404 },
         { reason: "GitHub API error", code: 502 },
         { reason: "Fail to read project files", code: 500 },
