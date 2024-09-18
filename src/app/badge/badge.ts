@@ -15,6 +15,7 @@ import {
     gitPlatformFromString,
 } from "../../git-platform/git-platform";
 import { inferVersion } from "../../git-platform/project";
+import { newVersionBadge, newVersionFromString } from "./badge-template";
 
 type Kv = [string, string];
 
@@ -99,7 +100,16 @@ async function respondVersionBadge(
 
     const versionBadge = pipe(
         version,
-        E.map(version => new Response(version)),
+        E.flatMap(newVersionFromString),
+        E.map(newVersionBadge),
+        E.map(badge => new Response(
+            badge,
+            {
+                headers: {
+                    "Content-Type": "image/svg+xml",
+                },
+            },
+        )),
     );
 
     let result = error();
