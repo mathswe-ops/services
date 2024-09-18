@@ -127,6 +127,7 @@ async function fetchFileListOnGitHub(
     const init = {
         headers: {
             Accept: "application/vnd.github+json",
+            "User-Agent": "mathswe-ops-services",
         },
     };
 
