@@ -5,6 +5,7 @@
 import * as E from "fp-ts/Either";
 import { Either } from "fp-ts/Either";
 import { identity, pipe } from "fp-ts/function";
+import { projectBadgeTemplate } from "./badge.data";
 
 const badgeData = `
 <svg xmlns="http://www.w3.org/2000/svg"
@@ -66,6 +67,23 @@ export const newVersionBadge = (version: Version): string => {
         .replaceAll("{{totalWidth}}", totalWidth.toString())
         .replaceAll("{{textX}}", textX.toString())
         .replaceAll("{{versionRectWidth}}", versionRectWidth.toString());
+};
+
+export const newProjectBadge = (project: string, icon64: string) => {
+    const padding = 18;
+    const length = project.length;
+    const textLength = (length / 7) * 55;
+    const projectRectWidth = textLength + padding * 2;
+    const textX = 96 + padding;
+    const totalWidth = 96 + projectRectWidth;
+
+    return projectBadgeTemplate
+        .replaceAll("{{project}}", project)
+        .replaceAll("{{icon64}}", icon64)
+        .replaceAll("{{textLength}}", textLength.toString())
+        .replaceAll("{{totalWidth}}", totalWidth.toString())
+        .replaceAll("{{textX}}", textX.toString())
+        .replaceAll("{{projectRectWidth}}", projectRectWidth.toString());
 };
 
 export const notFoundBadge = `
