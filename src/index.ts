@@ -4,7 +4,7 @@
 
 import { AutoRouter, cors } from "itty-router";
 import { getCorsOrigin } from "./mathswe-client/req/client/client-req";
-import { handleVersionBadge } from "./app/badge/badge";
+import { handleVersionBadge } from "./app/badge/version";
 
 export interface Env {
 }
