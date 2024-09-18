@@ -30,7 +30,7 @@ type VersionBadgeParams = {
 }
 
 export async function handleVersionBadge(req: IRequest): Promise<Response> {
-    const paramNames = ["gitProvider", "user", "repo"];
+    const paramNames = ["gitPlatform", "user", "repo"];
     const { params, query } = req;
     const root: Option<string> = pipe(
         query["path"],

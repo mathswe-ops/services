@@ -22,7 +22,7 @@ const router = AutoRouter({
 
 router
     .get("/", () => (new Response("MathSwe Ops Services")))
-    .get("/badge/version/:gitProvider/:user/:repo", handleVersionBadge)
+    .get("/badge/version/:gitPlatform/:user/:repo", handleVersionBadge)
     .get("/badge/project/:project", handleProjectBadge);
 
 export default router;
