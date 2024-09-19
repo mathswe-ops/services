@@ -4,18 +4,13 @@
 
 # MathSwe Ops Services
 
-[//]: # (TODO automate!)
-
-[//]: # ([![Project]&#40;public/mathswe-ops-services-badge.svg&#41;]&#40;https://ops.math.software&#41;)
-
-[//]: # (&nbsp;)
+[![Project](https://mathswe-ops-services.tobiasbriones-dev.workers.dev/badge/project/mathswe-ops-services)](https://ops.math.software#services)
+&nbsp;
 [![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/mathswe-ops/services)
 
 [![GitHub Project License](https://img.shields.io/github/license/mathswe-ops/services.svg?style=flat-square)](https://github.com/mathswe-ops/services/blob/main/LICENSE)
 
-[//]: # (TODO automate!)
-
-[//]: # (![GitHub Release]&#40;public/mathswe-ops-services-release-badge.svg&#41;)
+[![GitHub Release](https://mathswe-ops-services.tobiasbriones-dev.workers.dev/badge/version/github/mathswe-ops/services)](https://github.com/mathswe-ops/services/releases/latest)
 
 MathSwe Ops with all the general purpose web Services to develop and deploy
 mathematical software.
@@ -28,6 +23,44 @@ Run tests with `npm run test`.
 
 To deploy, login to the Wrangler CLI via `wrangler login`, and run `npm run 
 deploy`.
+
+## API
+
+The application is currently running at
+[mathswe-ops-services.tobiasbriones-dev.workers.dev](https://mathswe-ops-services.tobiasbriones-dev.workers.dev).
+
+| Method | Endpoint                                  | Description                  | Parameters                                                                                                                                                                      |
+|--------|-------------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GET    | `/`                                       | Welcome message              | None                                                                                                                                                                            |
+| GET    | `/badge/version/:gitPlatform/:user/:repo` | Badge for repository version | `:gitPlatform` - Only GitHub supported<br>`:user` - Repository user or Org<br>`:repo` - Repository name<br> `?path` - Project's root subdirectory (e.g., a microservice or MVP) |
+| GET    | `/badge/project/:project`                 | Main badge for a project     | `:project` - MathSwe project name<br>`?mvp` - Flag for MVP versions                                                                                                             |
+
+`Version Badge Types`
+
+```ts
+type VersionBadgeParams = {
+    gitPlatform: GitPlatform,
+    user: string,
+    repo: string,
+    root: Option<string>
+}
+```
+
+`Project Badge Types`
+
+```ts
+type Project
+    = { tag: "Msw" }
+    | { tag: "MathSoftware" }
+    | { tag: "Repsymo" }
+    | { tag: "Texsydo" }
+    | { tag: "MathSweOps" }
+    | { tag: "MathSweSystemOps" }
+    | { tag: "MathSweOpsServices" }
+    | { tag: "MathSwe" }
+```
+
+Recall the URL param is lowercase, e.g. `MathSoftware => math-software`.
 
 ## Contact
 

@@ -4,7 +4,8 @@
 
 import { AutoRouter, cors } from "itty-router";
 import { getCorsOrigin } from "./mathswe-client/req/client/client-req";
-import { handleVersionBadge } from "./app/badge/badge";
+import { handleVersionBadge } from "./app/badge/version";
+import { handleProjectBadge } from "./app/badge/project";
 
 export interface Env {
 }
@@ -21,6 +22,7 @@ const router = AutoRouter({
 
 router
     .get("/", () => (new Response("MathSwe Ops Services")))
-    .get("/badge/version/:gitProvider/:user/:repo", handleVersionBadge);
+    .get("/badge/version/:gitPlatform/:user/:repo", handleVersionBadge)
+    .get("/badge/project/:project", handleProjectBadge);
 
 export default router;
