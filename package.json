@@ -1,6 +1,6 @@
 {
     "name": "services",
-    "version": "0.1.0-dev",
+    "version": "0.1.0",
     "description": "MathSwe Ops with all the general purpose web Services to develop and deploy mathematical software. ",
     "main": "src/index.ts",
     "private": true,
