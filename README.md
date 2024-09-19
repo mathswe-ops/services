@@ -10,7 +10,7 @@
 
 [![GitHub Project License](https://img.shields.io/github/license/mathswe-ops/services.svg?style=flat-square)](https://github.com/mathswe-ops/services/blob/main/LICENSE)
 
-[![GitHub Release](https://mathswe-ops-services.tobiasbriones-dev.workers.dev/badge/version/github/mathswe-ops/services)](https://github.com/mathswe-ops/services/releases/latest)
+[![GitHub Release](https://mathswe-ops-services.tobiasbriones-dev.workers.dev/badge/version/github/mathswe-ops/services?)](https://github.com/mathswe-ops/services/releases/latest)
 
 MathSwe Ops with all the general purpose web Services to develop and deploy
 mathematical software.
